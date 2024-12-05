@@ -13,7 +13,8 @@ public class WebConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/usuarios").allowedOrigins("http://localhost:3000/");
+                // Permitir acesso tanto de localhost:3000 quanto de localhost:5173
+                registry.addMapping("/posts").allowedOrigins("http://localhost:3000", "http://localhost:5173");
             }
         };
     }

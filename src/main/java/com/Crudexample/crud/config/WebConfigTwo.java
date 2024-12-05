@@ -10,7 +10,7 @@ public class WebConfigTwo implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:3000") // Permitir o frontend
+                .allowedOrigins("http://localhost:3000", "http://localhost:5173") // Permitir o frontend de ambos os endereços
                 .allowedMethods("GET", "POST", "PUT", "DELETE");
     }
 }
