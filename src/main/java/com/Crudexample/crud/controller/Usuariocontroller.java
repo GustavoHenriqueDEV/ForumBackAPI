@@ -64,5 +64,27 @@ public class Usuariocontroller {
                     .body("Ocorreu um erro ao tentar deletar o usuário: " + e.getMessage());
         }
     }
+
+
+    // Endpoint para login
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody Usuario usuario) {
+        Usuario user = usuarioService.login(usuario.getLogin(), usuario.getSenha());
+        if (user != null) {
+            return ResponseEntity.ok(user.getIdusuario()); // Retorna o ID do usuário
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciais inválidas");
+    }
+
+    // Endpoint para registrar
+    @PostMapping("/register")
+    public ResponseEntity<Usuario> register(@RequestBody Usuario usuario) {
+        try {
+            Usuario newUser = usuarioService.register(usuario);
+            return ResponseEntity.ok(newUser);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
 }
 

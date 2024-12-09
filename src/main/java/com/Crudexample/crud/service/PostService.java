@@ -3,9 +3,11 @@ package com.Crudexample.crud.service;
 import com.Crudexample.crud.model.Post;
 import com.Crudexample.crud.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class PostService {
@@ -28,6 +30,16 @@ public class PostService {
                     return post;
                 }).orElseThrow(() -> new RuntimeException("Post com o id especificado não foi encontrado"));
     }
+
+        @Autowired
+        private JdbcTemplate jdbcTemplate;
+
+        public List<Map<String, Object>> findAllPostsWithUserNames() {
+            String query = "SELECT post.idpost, post.titulo, post.tipo, post.conteudo, post.likes,  post.iduser, usuario.nome " +
+                    "FROM post " +
+                    "INNER JOIN usuario ON post.iduser = usuario.idusuario";
+            return jdbcTemplate.queryForList(query);
+        }
 
     public List<Post> findAllPosts() {
         return postRepository.findAll();

@@ -2,6 +2,9 @@ package com.Crudexample.crud.model;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "post")
 public class Post {
@@ -17,6 +20,7 @@ public class Post {
     @Column(name = "tipo")
     private String tipo;
 
+
     @ManyToOne
     @JoinColumn(name = "iduser", referencedColumnName = "idusuario", nullable = false)
     private Usuario usuario; // Relacionamento com Usuario
@@ -27,22 +31,21 @@ public class Post {
     @Column(name = "likes")
     private int likes;
 
-    @Column(name = "comentario")
-    private String comentario;
-
     // Construtor sem argumentos (necessário para o Hibernate)
     public Post() {}
 
     // Construtor com parâmetros
-    public Post(Long idpost, String titulo, String tipo, Usuario usuario, String conteudo, int likes, String comentario) {
+    public Post(Long idpost, String titulo, String tipo, Usuario usuario, String conteudo, int likes) {
         this.idpost = idpost;
         this.titulo = titulo;
         this.tipo = tipo;
         this.usuario = usuario;
         this.conteudo = conteudo;
         this.likes = likes;
-        this.comentario = comentario;
     }
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comentario> comentarios = new ArrayList<>();
 
     // Getters e Setters
     public Long getIdpost() {
@@ -93,11 +96,4 @@ public class Post {
         this.likes = likes;
     }
 
-    public String getComentario() {
-        return comentario;
-    }
-
-    public void setComentario(String comentario) {
-        this.comentario = comentario;
-    }
 }

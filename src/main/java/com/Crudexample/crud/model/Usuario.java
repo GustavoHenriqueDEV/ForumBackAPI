@@ -2,6 +2,8 @@ package com.Crudexample.crud.model;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "usuario")
 public class Usuario {
@@ -25,6 +27,9 @@ public class Usuario {
 
     @Column(name = "idade")
     private int idade;
+
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
+    private List<Post> posts;
 
     // Construtor padrão (necessário para o Hibernate)
     public Usuario() {}

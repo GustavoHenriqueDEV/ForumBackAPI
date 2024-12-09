@@ -1,7 +1,9 @@
 package com.Crudexample.crud.controller;
 
+import com.Crudexample.crud.model.Comentario;
 import com.Crudexample.crud.model.Post;
 import com.Crudexample.crud.model.Usuario;
+import com.Crudexample.crud.service.ComentarioService;
 import com.Crudexample.crud.service.PostService;
 import com.Crudexample.crud.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/posts")
@@ -17,32 +20,60 @@ public class PostController {
 
     private final PostService postService;
     private final UsuarioRepository usuarioRepository;
+    private final ComentarioService comentarioService;
+
 
     @Autowired
-    public PostController(PostService postService, UsuarioRepository usuarioRepository) {
+    public PostController(PostService postService, UsuarioRepository usuarioRepository, ComentarioService comentarioService) {
         this.postService = postService;
         this.usuarioRepository = usuarioRepository;
+        this.comentarioService = comentarioService;
     }
 
     @GetMapping
-    public ResponseEntity<List<Post>> getAllPosts(){
-        List<Post> posts = postService.findAllPosts();
+    public ResponseEntity<List<Map<String, Object>>> getAllPosts() {
+        List<Map<String, Object>> posts = postService.findAllPostsWithUserNames();
         return ResponseEntity.ok(posts);
     }
-
 
     @PostMapping
     public ResponseEntity<String> createPost(@RequestBody Post post) {
         try {
+            // Verifica se o usuário associado ao post existe
             Usuario usuario = usuarioRepository.findById(post.getUsuario().getIdusuario())
                     .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+            // Associa o usuário encontrado ao post
+            post.setUsuario(usuario);
+            // Cria o post
+            Post createdPost = postService.createPost(post);
 
-            post.setUsuario(usuario); // Associar o usuário ao post
-
-            Post createdPost = postService.createPost(post); // Criar o post
-            return ResponseEntity.status(HttpStatus.CREATED).body("Post criado com sucesso: " + createdPost.toString());
+            // Retorna a resposta de sucesso com informações do post criado
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body("Post criado com sucesso: " + createdPost.toString());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao criar o post: " + e.getMessage());
+            // Retorna erro interno com a mensagem detalhada
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erro ao criar o post: " + e.getMessage());
+        }
+    }
+    @GetMapping("/{id}/comentarios")
+    public ResponseEntity<List<Comentario>> getComentariosByPost(@PathVariable Long id) {
+        try {
+            List<Comentario> comentarios = comentarioService.getComentariosByPost(id);
+            return ResponseEntity.ok(comentarios);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(null);
+        }
+    }
+
+    @PostMapping("/{id}/comentarios")
+    public ResponseEntity<String> adicionarComentario(@PathVariable Long id, @RequestBody Comentario comentario) {
+        try {
+            comentarioService.adicionarComentario(id, comentario);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Comentário adicionado com sucesso.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao adicionar comentário: " + e.getMessage());
         }
     }
 }

@@ -50,5 +50,16 @@ public class UsuarioService {
     public List<Usuario> findAll() {
         return usuarioRepository.findAll();
     }
+
+    // Lógica de login
+    public Usuario login(String login, String senha) {
+        return usuarioRepository.findByLoginAndSenha(login, senha)
+                .orElse(null);
+    }
+
+    // Registrar um novo usuário
+    public Usuario register(Usuario usuario) {
+        return usuarioRepository.save(usuario);
+    }
 }
 
