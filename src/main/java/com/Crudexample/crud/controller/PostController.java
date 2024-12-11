@@ -70,10 +70,26 @@ public class PostController {
     @PostMapping("/{id}/comentarios")
     public ResponseEntity<String> adicionarComentario(@PathVariable Long id, @RequestBody Comentario comentario) {
         try {
+            // Buscar o usuário no banco de dados pelo ID recebido
+            Long idUsuario = Long.valueOf(comentario.getUsuario() != null ? comentario.getUsuario().getIdusuario() : null);
+            if (idUsuario == null) {
+                throw new RuntimeException("O campo 'usuario' no comentário não pode ser nulo");
+            }
+
+            Usuario usuario = usuarioRepository.findById(Math.toIntExact(idUsuario))
+                    .orElseThrow(() -> new RuntimeException("Usuário com ID " + idUsuario + " não encontrado"));
+
+            // Associar o usuário ao comentário
+            comentario.setUsuario(usuario);
+
+            // Chamar o serviço para adicionar o comentário
             comentarioService.adicionarComentario(id, comentario);
+
             return ResponseEntity.status(HttpStatus.CREATED).body("Comentário adicionado com sucesso.");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao adicionar comentário: " + e.getMessage());
         }
     }
+
+
 }

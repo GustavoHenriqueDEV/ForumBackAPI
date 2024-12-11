@@ -1,7 +1,6 @@
 package com.Crudexample.crud.model;
 
 import jakarta.persistence.*;
-
 @Entity
 @Table(name = "comentario")
 public class Comentario {
@@ -15,21 +14,14 @@ public class Comentario {
     @JoinColumn(name = "idpost", referencedColumnName = "idpost", nullable = false)
     private Post post;
 
+    @ManyToOne
+    @JoinColumn(name = "idusuario", referencedColumnName = "idusuario", nullable = false)  // Alterando para idusuario
+    private Usuario usuario;  // Alterando para 'usuario' no lugar de 'autor'
+
     @Column(name = "conteudo", nullable = false)
     private String conteudo;
 
-    @Column(name = "autor")
-    private String autor; // Opcional: para registrar o autor do comentário
-
-    public Comentario() {}
-
-    public Comentario(Long idcomentario, Post post, String conteudo, String autor) {
-        this.idcomentario = idcomentario;
-        this.post = post;
-        this.conteudo = conteudo;
-        this.autor = autor;
-    }
-
+    // Getters and Setters
     public Long getIdcomentario() {
         return idcomentario;
     }
@@ -46,6 +38,14 @@ public class Comentario {
         this.post = post;
     }
 
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
     public String getConteudo() {
         return conteudo;
     }
@@ -53,12 +53,5 @@ public class Comentario {
     public void setConteudo(String conteudo) {
         this.conteudo = conteudo;
     }
-
-    public String getAutor() {
-        return autor;
-    }
-
-    public void setAutor(String autor) {
-        this.autor = autor;
-    }
 }
+
