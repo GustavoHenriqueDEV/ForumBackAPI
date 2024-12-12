@@ -31,6 +31,7 @@ public class Post {
     @Column(name = "likes")
     private int likes;
 
+
     // Construtor sem argumentos (necessário para o Hibernate)
     public Post() {}
 
@@ -46,6 +47,7 @@ public class Post {
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comentario> comentarios = new ArrayList<>();
+
 
     // Getters e Setters
     public Long getIdpost() {
@@ -95,5 +97,7 @@ public class Post {
     public void setLikes(int likes) {
         this.likes = likes;
     }
+
+
 
 }

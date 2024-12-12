@@ -3,6 +3,7 @@ package com.Crudexample.crud.controller;
 import com.Crudexample.crud.model.Comentario;
 import com.Crudexample.crud.model.Post;
 import com.Crudexample.crud.model.Usuario;
+import com.Crudexample.crud.repository.PostRepository;
 import com.Crudexample.crud.service.ComentarioService;
 import com.Crudexample.crud.service.PostService;
 import com.Crudexample.crud.repository.UsuarioRepository;
@@ -24,7 +25,10 @@ public class PostController {
 
 
     @Autowired
-    public PostController(PostService postService, UsuarioRepository usuarioRepository, ComentarioService comentarioService) {
+    private PostRepository postRepository;
+
+    @Autowired
+    public PostController(PostService postService, UsuarioRepository usuarioRepository, ComentarioService comentarioService ) {
         this.postService = postService;
         this.usuarioRepository = usuarioRepository;
         this.comentarioService = comentarioService;
