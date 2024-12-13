@@ -5,6 +5,7 @@ import com.Crudexample.crud.model.Post;
 import com.Crudexample.crud.model.Usuario;
 import com.Crudexample.crud.repository.PostRepository;
 import com.Crudexample.crud.service.ComentarioService;
+import com.Crudexample.crud.service.LikeService;
 import com.Crudexample.crud.service.PostService;
 import com.Crudexample.crud.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import java.util.Map;
 @RequestMapping("/posts")
 public class PostController {
 
+    private final LikeService likeService;
     private final PostService postService;
     private final UsuarioRepository usuarioRepository;
     private final ComentarioService comentarioService;
@@ -28,7 +30,8 @@ public class PostController {
     private PostRepository postRepository;
 
     @Autowired
-    public PostController(PostService postService, UsuarioRepository usuarioRepository, ComentarioService comentarioService ) {
+    public PostController(LikeService likeService, PostService postService, UsuarioRepository usuarioRepository, ComentarioService comentarioService ) {
+        this.likeService = likeService;
         this.postService = postService;
         this.usuarioRepository = usuarioRepository;
         this.comentarioService = comentarioService;
@@ -60,6 +63,19 @@ public class PostController {
                     .body("Erro ao criar o post: " + e.getMessage());
         }
     }
+
+    @PostMapping("/{postId}/likes")
+    public ResponseEntity<String> darLike(@PathVariable("postId") Long postId, @RequestParam Long idusuario) {
+        try {
+            likeService.darLike(postId, idusuario);
+            return ResponseEntity.ok("Like adicionado com sucesso.");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao adicionar like: " + e.getMessage());
+        }
+    }
+
     @GetMapping("/{id}/comentarios")
     public ResponseEntity<List<Comentario>> getComentariosByPost(@PathVariable Long id) {
         try {
@@ -94,6 +110,4 @@ public class PostController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao adicionar comentário: " + e.getMessage());
         }
     }
-
-
 }
