@@ -35,17 +35,20 @@ public class LikeService {
         // Verifica se o like já existe
         Optional<Like> likeExistente = likeRepository.findByPostAndUsuario(post, usuario);
         if (likeExistente.isPresent()) {
-            throw new RuntimeException("Usuário já deu like neste post");
+            // Se o like já existe, remove o like
+            likeRepository.delete(likeExistente.get());
+            post.setLikes(post.getLikes() - 1); // Decrementa o contador de likes
+        } else {
+            // Caso contrário, adiciona o like
+            Like novoLike = new Like();
+            novoLike.setPost(post);
+            novoLike.setUsuario(usuario);
+            likeRepository.save(novoLike);
+            post.setLikes(post.getLikes() + 1); // Incrementa o contador de likes
         }
 
-        // Cria e salva o novo like
-        Like novoLike = new Like();
-        novoLike.setPost(post);
-        novoLike.setUsuario(usuario);
-        likeRepository.save(novoLike);
-
-        // Atualiza o contador de likes no post
-        post.setLikes(post.getLikes() + 1);
+        // Atualiza o post
         postRepository.save(post);
     }
+
 }

@@ -65,16 +65,22 @@ public class PostController {
     }
 
     @PostMapping("/{postId}/likes")
-    public ResponseEntity<String> darLike(@PathVariable("postId") Long postId, @RequestParam Long idusuario) {
+    public ResponseEntity<?> darLike(@PathVariable("postId") Long postId, @RequestParam Long idusuario) {
         try {
             likeService.darLike(postId, idusuario);
-            return ResponseEntity.ok("Like adicionado com sucesso.");
+            // Busca a quantidade atualizada de likes no post
+            int updatedLikes = postRepository.findById(Math.toIntExact(postId))
+                    .map(Post::getLikes)
+                    .orElseThrow(() -> new RuntimeException("Post não encontrado"));
+
+            return ResponseEntity.ok(updatedLikes);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao adicionar like: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao adicionar/remover like: " + e.getMessage());
         }
     }
+
 
     @GetMapping("/{id}/comentarios")
     public ResponseEntity<List<Comentario>> getComentariosByPost(@PathVariable Long id) {
