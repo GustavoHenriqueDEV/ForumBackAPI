@@ -9,7 +9,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/usuarios")
@@ -71,10 +73,15 @@ public class Usuariocontroller {
     public ResponseEntity<?> login(@RequestBody Usuario usuario) {
         Usuario user = usuarioService.login(usuario.getLogin(), usuario.getSenha());
         if (user != null) {
-            return ResponseEntity.ok(user.getIdusuario()); // Retorna o ID do usuário
+            // Retorna o ID e o nome do usuário
+            Map<String, Object> response = new HashMap<>();
+            response.put("idusuario", user.getIdusuario());
+            response.put("nome", user.getNome());
+            return ResponseEntity.ok(response);
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciais inválidas");
     }
+
 
     // Endpoint para registrar
     @PostMapping("/register")
