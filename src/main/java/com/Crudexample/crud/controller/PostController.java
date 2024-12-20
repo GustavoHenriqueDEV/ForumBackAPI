@@ -119,4 +119,14 @@ public class PostController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao adicionar comentário: " + e.getMessage());
         }
     }
+    @GetMapping("/{id}/comentarios")
+    public ResponseEntity<List<Comentario>> getComentariosByPost(@PathVariable Long id) {
+        try {
+            List<Comentario> comentarios = comentarioService.getComentariosByPost(id);
+            return ResponseEntity.ok(comentarios);
+
+        } finally {
+
+        }
+    }
 }

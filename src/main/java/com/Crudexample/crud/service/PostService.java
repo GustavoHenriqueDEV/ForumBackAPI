@@ -35,7 +35,7 @@ public class PostService {
         private JdbcTemplate jdbcTemplate;
 
         public List<Map<String, Object>> findAllPostsWithUserNames() {
-            String query = "SELECT post.idpost, post.titulo, post.tipo, post.conteudo, post.likes,  post.iduser, usuario.nome " +
+            String query = "SELECT post.idpost, post.titulo, post.tipo, post.conteudo, post.likes,  post.iduser, usuario.nome, post.imagem, post.imagembase64 " +
                     "FROM post " +
                     "INNER JOIN usuario ON post.iduser = usuario.idusuario";
             return jdbcTemplate.queryForList(query);
