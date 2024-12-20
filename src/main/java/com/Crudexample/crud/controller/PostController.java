@@ -12,7 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Arrays;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
@@ -42,75 +45,58 @@ public class PostController {
         List<Map<String, Object>> posts = postService.findAllPostsWithUserNames();
         return ResponseEntity.ok(posts);
     }
-
     @PostMapping
     public ResponseEntity<String> createPost(@RequestBody Post post) {
         try {
-            // Verifica se o usuário associado ao post existe
+            System.out.println(post.toString());
+
             Usuario usuario = usuarioRepository.findById(post.getUsuario().getIdusuario())
-                    .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
-            // Associa o usuário encontrado ao post
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado"));
             post.setUsuario(usuario);
-            // Cria o post
+
+            if (post.getImagem() != null) {
+                try {
+                    byte[] imagemBytes = post.getImagem();
+                    String imagemBase64 = Base64.getEncoder().encodeToString(imagemBytes);
+
+                    System.out.println("Imagem Base64 gerada: " + imagemBase64);
+
+                    post.setImagem(imagemBytes);
+                    post.setImagemBase64(imagemBase64);
+
+                } catch (IllegalArgumentException e) {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                            .body("Imagem fornecida não é válida.");
+                }
+            } else {
+                post.setImagem(null);
+            }
+            // Criar o post
             Post createdPost = postService.createPost(post);
 
-            // Retorna a resposta de sucesso com informações do post criado
+            // Resposta com a string Base64 (opcional, caso o front-end precise)
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body("Post criado com sucesso: " + createdPost.toString());
+        } catch (ResponseStatusException e) {
+            return ResponseEntity.status(e.getStatusCode())
+                    .body(e.getReason());
         } catch (Exception e) {
-            // Retorna erro interno com a mensagem detalhada
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Erro ao criar o post: " + e.getMessage());
         }
     }
-
-    @PostMapping("/{postId}/likes")
-    public ResponseEntity<?> darLike(@PathVariable("postId") Long postId, @RequestParam Long idusuario) {
-        try {
-            likeService.darLike(postId, idusuario);
-            // Busca a quantidade atualizada de likes no post
-            int updatedLikes = postRepository.findById(Math.toIntExact(postId))
-                    .map(Post::getLikes)
-                    .orElseThrow(() -> new RuntimeException("Post não encontrado"));
-
-            return ResponseEntity.ok(updatedLikes);
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao adicionar/remover like: " + e.getMessage());
-        }
-    }
-
-
-    @GetMapping("/{id}/comentarios")
-    public ResponseEntity<List<Comentario>> getComentariosByPost(@PathVariable Long id) {
-        try {
-            List<Comentario> comentarios = comentarioService.getComentariosByPost(id);
-            return ResponseEntity.ok(comentarios);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(null);
-        }
-    }
-
     @PostMapping("/{id}/comentarios")
     public ResponseEntity<String> adicionarComentario(@PathVariable Long id, @RequestBody Comentario comentario) {
         try {
-            // Buscar o usuário no banco de dados pelo ID recebido
             Long idUsuario = Long.valueOf(comentario.getUsuario() != null ? comentario.getUsuario().getIdusuario() : null);
             if (idUsuario == null) {
                 throw new RuntimeException("O campo 'usuario' no comentário não pode ser nulo");
             }
-
             Usuario usuario = usuarioRepository.findById(Math.toIntExact(idUsuario))
                     .orElseThrow(() -> new RuntimeException("Usuário com ID " + idUsuario + " não encontrado"));
-
-            // Associar o usuário ao comentário
             comentario.setUsuario(usuario);
-
-            // Chamar o serviço para adicionar o comentário
             comentarioService.adicionarComentario(id, comentario);
-
             return ResponseEntity.status(HttpStatus.CREATED).body("Comentário adicionado com sucesso.");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao adicionar comentário: " + e.getMessage());

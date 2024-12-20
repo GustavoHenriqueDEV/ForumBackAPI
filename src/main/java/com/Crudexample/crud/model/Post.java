@@ -3,6 +3,7 @@ package com.Crudexample.crud.model;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Entity
@@ -20,7 +21,6 @@ public class Post {
     @Column(name = "tipo")
     private String tipo;
 
-
     @ManyToOne
     @JoinColumn(name = "iduser", referencedColumnName = "idusuario", nullable = false)
     private Usuario usuario; // Relacionamento com Usuario
@@ -31,25 +31,43 @@ public class Post {
     @Column(name = "likes")
     private int likes;
 
+    @Column(name = "imagembase64", columnDefinition="STRING" )
+    private String imagembase64;
 
+    public String getImagemBase64() {
+        return imagembase64;
+    }
+    public void setImagemBase64(String imagembase64) {
+        this.imagembase64 = imagembase64;
+    }
+
+    @Column(name = "imagem", columnDefinition = "LONGBLOB")
+    private byte[] imagem;
+
+    public byte[] getImagem() {
+        return imagem;
+    }
+    public void setImagem(byte[] imagem) {
+        this.imagem = imagem;
+    }
     // Construtor sem argumentos (necessário para o Hibernate)
     public Post() {}
 
     // Construtor com parâmetros
-    public Post(Long idpost, String titulo, String tipo, Usuario usuario, String conteudo, int likes) {
+    public Post(Long idpost, String titulo, String tipo, Usuario usuario, String conteudo, int likes, byte[] imagem) {
         this.idpost = idpost;
         this.titulo = titulo;
         this.tipo = tipo;
         this.usuario = usuario;
         this.conteudo = conteudo;
         this.likes = likes;
+        this.imagem = imagem;
     }
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comentario> comentarios = new ArrayList<>();
-
-
     // Getters e Setters
+
     public Long getIdpost() {
         return idpost;
     }
@@ -98,6 +116,17 @@ public class Post {
         this.likes = likes;
     }
 
-
-
+    @Override
+    public String toString() {
+        return "Post{" +
+                "idpost=" + idpost +
+                ", titulo='" + titulo + '\'' +
+                ", tipo='" + tipo + '\'' +
+                ", usuario=" + usuario +
+                ", conteudo='" + conteudo + '\'' +
+                ", likes=" + likes +
+                ", imagem=" + Arrays.toString(imagem) +
+                ", comentarios=" + comentarios +
+                '}';
+    }
 }
