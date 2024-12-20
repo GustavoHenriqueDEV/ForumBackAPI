@@ -86,6 +86,23 @@ public class PostController {
                     .body("Erro ao criar o post: " + e.getMessage());
         }
     }
+    @PostMapping("/{postId}/likes")
+    public ResponseEntity<?> darLike(@PathVariable("postId") Long postId, @RequestParam Long idusuario) {
+        try {
+            likeService.darLike(postId, idusuario);
+            // Busca a quantidade atualizada de likes no post
+            int updatedLikes = postRepository.findById(Math.toIntExact(postId))
+                    .map(Post::getLikes)
+                    .orElseThrow(() -> new RuntimeException("Post não encontrado"));
+
+            return ResponseEntity.ok(updatedLikes);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao adicionar/remover like: " + e.getMessage());
+        }
+    }
+
     @PostMapping("/{id}/comentarios")
     public ResponseEntity<String> adicionarComentario(@PathVariable Long id, @RequestBody Comentario comentario) {
         try {
