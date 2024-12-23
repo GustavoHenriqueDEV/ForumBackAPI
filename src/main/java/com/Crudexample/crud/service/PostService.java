@@ -8,9 +8,16 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class PostService {
+
+    public Optional<Post> findPostByID(int id) {
+
+        return Optional.ofNullable(postRepository.findById(id).orElseThrow(() -> new RuntimeException("Post com o ID " + id + " não foi encontrado.")));
+    }
+
 
     private final PostRepository postRepository;
 
@@ -44,4 +51,6 @@ public class PostService {
     public List<Post> findAllPosts() {
         return postRepository.findAll();
     }
+
+
 }

@@ -14,10 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping("/posts")
@@ -124,6 +121,15 @@ public class PostController {
 
         } finally {
 
+        }
+    }
+    @GetMapping("/{id}")
+    public ResponseEntity<Optional<Post>> getPostById(@PathVariable int id){
+        try {
+            Optional<Post> post = postService.findPostByID(id);
+            return ResponseEntity.ok(post);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status (HttpStatus.NOT_FOUND).body(null);
         }
     }
 }
