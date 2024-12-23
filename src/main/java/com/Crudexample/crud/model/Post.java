@@ -31,15 +31,14 @@ public class Post {
     @Column(name = "likes")
     private int likes;
 
-    @Column(name = "imagembase64", columnDefinition="STRING" )
-    private String imagembase64;
-
-    public String getImagemBase64() {
+    public String getImagembase64() {
         return imagembase64;
     }
-    public void setImagemBase64(String imagembase64) {
+    public void setImagembase64(String imagembase64) {
         this.imagembase64 = imagembase64;
     }
+    @Column(name = "imagembase64", columnDefinition="LONGTEXT" )
+    private String imagembase64;
 
     @Column(name = "imagem", columnDefinition = "LONGBLOB")
     private byte[] imagem;

@@ -48,7 +48,6 @@ public class PostController {
     @PostMapping
     public ResponseEntity<String> createPost(@RequestBody Post post) {
         try {
-            System.out.println(post.toString());
 
             Usuario usuario = usuarioRepository.findById(post.getUsuario().getIdusuario())
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado"));
@@ -62,7 +61,7 @@ public class PostController {
                     System.out.println("Imagem Base64 gerada: " + imagemBase64);
 
                     post.setImagem(imagemBytes);
-                    post.setImagemBase64(imagemBase64);
+                    post.setImagembase64(imagemBase64);
 
                 } catch (IllegalArgumentException e) {
                     return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -71,10 +70,8 @@ public class PostController {
             } else {
                 post.setImagem(null);
             }
-            // Criar o post
             Post createdPost = postService.createPost(post);
 
-            // Resposta com a string Base64 (opcional, caso o front-end precise)
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body("Post criado com sucesso: " + createdPost.toString());
         } catch (ResponseStatusException e) {
