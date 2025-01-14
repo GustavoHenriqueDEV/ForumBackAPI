@@ -34,17 +34,30 @@ public class Usuario {
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
     private List<Post> posts;
 
+    // NOVO CAMPO:
+    @Column(name = "role")
+    private String role;
+    // Pode ser "ADMIN" ou "USER" (por ex.)
+
+    // getters e setters
+    public String getRole() {
+        return role;
+    }
+    public void setRole(String role) {
+        this.role = role;
+    }
     // Construtor padrão (necessário para o Hibernate)
     public Usuario() {}
 
     // Construtor completo
-    public Usuario(Long idusuario, String nome, String login, String senha, String email, int idade) {
+    public Usuario(Long idusuario, String nome, String login, String senha, String email, int idade, String role) {
         this.idusuario = idusuario;
         this.nome = nome;
         this.login = login;
         this.senha = senha;
         this.email = email;
         this.idade = idade;
+        this.role = role;
     }
 
     public Usuario(int id) {

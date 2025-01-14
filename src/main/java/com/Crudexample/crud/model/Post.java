@@ -1,7 +1,9 @@
 package com.Crudexample.crud.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -9,6 +11,17 @@ import java.util.List;
 @Entity
 @Table(name = "post")
 public class Post {
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    @Column(name = "data_criacao", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    private LocalDateTime dataCriacao;
+
+    public LocalDateTime getDataCriacao() {
+        return dataCriacao;
+    }
+    public void setDataCriacao(LocalDateTime dataCriacao) {
+        this.dataCriacao = dataCriacao;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -53,7 +66,7 @@ public class Post {
     public Post() {}
 
     // Construtor com parâmetros
-    public Post(Long idpost, String titulo, String tipo, Usuario usuario, String conteudo, int likes, byte[] imagem) {
+    public Post(Long idpost, String titulo, String tipo, Usuario usuario, String conteudo, int likes, byte[] imagem, LocalDateTime dataCriacao) {
         this.idpost = idpost;
         this.titulo = titulo;
         this.tipo = tipo;
@@ -61,6 +74,7 @@ public class Post {
         this.conteudo = conteudo;
         this.likes = likes;
         this.imagem = imagem;
+        this.dataCriacao = dataCriacao;
     }
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
