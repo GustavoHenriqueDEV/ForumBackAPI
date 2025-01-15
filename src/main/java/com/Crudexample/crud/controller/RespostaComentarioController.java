@@ -21,13 +21,11 @@ public class RespostaComentarioController {
         this.respostaComentarioService = respostaComentarioService;
     }
 
-    // Endpoint para adicionar uma resposta a um comentário
     @PostMapping("/{idComentario}")
     public ResponseEntity<?> adicionarResposta(
             @PathVariable Long idComentario,
             @RequestBody Map<String, Object> requestBody) {
         try {
-            // Verificar se os campos necessários estão presentes
             if (!requestBody.containsKey("idUsuario") || !requestBody.containsKey("conteudo")) {
                 return ResponseEntity.badRequest().body("Os campos 'idUsuario' e 'conteudo' são obrigatórios.");
             }
@@ -49,7 +47,6 @@ public class RespostaComentarioController {
     }
 
 
-    // Endpoint para listar todas as respostas de um comentário
     @GetMapping("/{idComentario}")
     public ResponseEntity<List<RespostaComentario>> listarRespostasPorComentario(@PathVariable Long idComentario) {
         try {

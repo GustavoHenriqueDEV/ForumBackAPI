@@ -24,30 +24,24 @@ public class LikeService {
     private UsuarioRepository usuarioRepository;
 
     public void darLike(Long postId, Long usuarioId) {
-        // Verifica se o post existe
         Post post = postRepository.findById(Math.toIntExact(postId))
                 .orElseThrow(() -> new RuntimeException("Post não encontrado"));
 
-        // Verifica se o usuário existe
         Usuario usuario = usuarioRepository.findById(Math.toIntExact(usuarioId))
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
-        // Verifica se o like já existe
         Optional<Like> likeExistente = likeRepository.findByPostAndUsuario(post, usuario);
         if (likeExistente.isPresent()) {
-            // Se o like já existe, remove o like
             likeRepository.delete(likeExistente.get());
-            post.setLikes(post.getLikes() - 1); // Decrementa o contador de likes
+            post.setLikes(post.getLikes() - 1);
         } else {
-            // Caso contrário, adiciona o like
             Like novoLike = new Like();
             novoLike.setPost(post);
             novoLike.setUsuario(usuario);
             likeRepository.save(novoLike);
-            post.setLikes(post.getLikes() + 1); // Incrementa o contador de likes
+            post.setLikes(post.getLikes() + 1);
         }
 
-        // Atualiza o post
         postRepository.save(post);
     }
 

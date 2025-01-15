@@ -62,10 +62,8 @@ public class Post {
     public void setImagem(byte[] imagem) {
         this.imagem = imagem;
     }
-    // Construtor sem argumentos (necessário para o Hibernate)
     public Post() {}
 
-    // Construtor com parâmetros
     public Post(Long idpost, String titulo, String tipo, Usuario usuario, String conteudo, int likes, byte[] imagem, LocalDateTime dataCriacao) {
         this.idpost = idpost;
         this.titulo = titulo;
@@ -79,7 +77,6 @@ public class Post {
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comentario> comentarios = new ArrayList<>();
-    // Getters e Setters
 
     public Long getIdpost() {
         return idpost;

@@ -72,7 +72,6 @@ public class Usuariocontroller {
     }
 
 
-    // Endpoint para login
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Usuario usuario) {
         Usuario user = usuarioService.login(usuario.getLogin(), usuario.getSenha());

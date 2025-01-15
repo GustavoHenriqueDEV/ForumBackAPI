@@ -15,13 +15,12 @@ public class Comentario {
     private Post post;
 
     @ManyToOne
-    @JoinColumn(name = "idusuario", referencedColumnName = "idusuario", nullable = false)  // Alterando para idusuario
-    private Usuario usuario;  // Alterando para 'usuario' no lugar de 'autor'
+    @JoinColumn(name = "idusuario", referencedColumnName = "idusuario", nullable = false)
+    private Usuario usuario;
 
     @Column(name = "conteudo", nullable = false)
     private String conteudo;
 
-    // Getters and Setters
     public Long getIdcomentario() {
         return idcomentario;
     }

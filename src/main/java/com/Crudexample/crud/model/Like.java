@@ -13,22 +13,19 @@ public class Like {
 
     @ManyToOne
     @JoinColumn(name = "idusuario", referencedColumnName = "idusuario", nullable = false)
-    private Usuario usuario; // Usuário que deu o like
+    private Usuario usuario;
 
     @ManyToOne
     @JoinColumn(name = "idpost", referencedColumnName = "idpost", nullable = false)
-    private Post post; // Post que recebeu o like
+    private Post post;
 
-    // Construtor padrão
     public Like() {}
 
-    // Construtor com parâmetros
     public Like(Usuario usuario, Post post) {
         this.usuario = usuario;
         this.post = post;
     }
 
-    // Getters e Setters
     public Long getIdlike() {
         return idlike;
     }

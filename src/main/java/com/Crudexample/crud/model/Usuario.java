@@ -10,7 +10,7 @@ public class Usuario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idusuario") // Alinhando com o nome da coluna no banco de dados
+    @Column(name = "idusuario")
     private Long idusuario;
 
     @Column(name = "nome")
@@ -34,21 +34,17 @@ public class Usuario {
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
     private List<Post> posts;
 
-    // NOVO CAMPO:
     @Column(name = "role")
     private String role;
 
-    // getters e setters
     public String getRole() {
         return role;
     }
     public void setRole(String role) {
         this.role = role;
     }
-    // Construtor padrão (necessário para o Hibernate)
     public Usuario() {}
 
-    // Construtor completo
     public Usuario(Long idusuario, String nome, String login, String senha, String email, int idade, String role) {
         this.idusuario = idusuario;
         this.nome = nome;
@@ -63,7 +59,6 @@ public class Usuario {
     }
 
 
-    // Getters e Setters
     public Integer getIdusuario() {
         return Math.toIntExact(idusuario);
     }

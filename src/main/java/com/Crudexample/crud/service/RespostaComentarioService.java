@@ -26,15 +26,12 @@ public class RespostaComentarioService {
     }
 
     public RespostaComentario adicionarResposta(Long idcomentario, Long idusuario, String conteudo) {
-        // Buscar o comentário
         Comentario comentario = comentarioRepository.findById(idcomentario)
                 .orElseThrow(() -> new RuntimeException("Comentário com ID " + idcomentario + " não encontrado"));
 
-        // Buscar o usuário
         Usuario usuario = usuarioRepository.findById(Math.toIntExact(idusuario))
                 .orElseThrow(() -> new RuntimeException("Usuário com ID " + idusuario + " não encontrado"));
 
-        // Criar e salvar a resposta
         RespostaComentario resposta = new RespostaComentario();
         resposta.setComentario(comentario);
         resposta.setUsuario(usuario);

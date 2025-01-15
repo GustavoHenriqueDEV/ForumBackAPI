@@ -23,14 +23,12 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
 
-    // Tratamento para erros de argumentos inválidos
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException ex, WebRequest request) {
         String mensagemErro = "Erro de entrada inválida: " + ex.getMessage();
         return new ResponseEntity<>(mensagemErro, HttpStatus.BAD_REQUEST);
     }
 
-    // Tratamento genérico para outras exceções
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleGlobalException(Exception ex, WebRequest request) {
         String mensagemErro = "Erro interno do servidor: " + ex.getMessage();
