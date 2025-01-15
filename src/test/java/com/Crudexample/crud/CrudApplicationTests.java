@@ -26,9 +26,9 @@ class CrudApplicationTests {
 
 	@Test
 	public void testaCreateUser(){
-
-		Usuario mockUsuario = new Usuario(1L, "João Silva", "joao123", "senhaSegura", "joao@example.com", 30);
-		when(usuarioRepository.save(mockUsuario)).thenReturn(mockUsuario);
+		Usuario mockUsuario;
+        mockUsuario = new Usuario(1L, "João Silva", "joao123", "senhaSegura", "joao@example.com", 30, "admin");
+        when(usuarioRepository.save(mockUsuario)).thenReturn(mockUsuario);
 
 		Usuario usuarioResult = usuarioService.create(mockUsuario);
 
@@ -45,7 +45,7 @@ class CrudApplicationTests {
  	}
 	 @Test
 	 public void deveriaLancarErroComNomeInvalido(){
-		 Usuario mockUsuario = new Usuario(1L, "", "joao123", "senhaSegura", "joao@example.com", 30);
+		 Usuario mockUsuario = new Usuario(1L, "", "joao123", "senhaSegura", "joao@example.com", 30, "admin");
 
 		 IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->{
 			 usuarioService.create(mockUsuario);
@@ -70,7 +70,7 @@ class CrudApplicationTests {
 	@Test
 	public void testDeleteUserSuccess() {
 		int userId = 1;
-		Usuario usuario = new Usuario(1L, "João Silva", "joao123", "senhaSegura", "joao@example.com", 30);
+		Usuario usuario = new Usuario(1L, "João Silva", "joao123", "senhaSegura", "joao@example.com", 30, "admin");
 		when(usuarioRepository.findById(userId)).thenReturn(Optional.of(usuario));
 
 		Usuario deletedUsuario = usuarioService.delete(userId);
@@ -81,9 +81,9 @@ class CrudApplicationTests {
 	}
 	@Test
 	public void deveriaFazerUpdateUser() {
-		Usuario existingUsuario = new Usuario(1L, "João Silva", "joao123", "senha123", "joao@example.com", 30);
+		Usuario existingUsuario = new Usuario(1L, "João Silva", "joao123", "senha123", "joao@example.com", 30, "admin");
 
-		Usuario updatedDetails = new Usuario(1L, "João Santos", "joaosantos", "novaSenha", "joaosantos@example.com", 35);
+		Usuario updatedDetails = new Usuario(1L, "João Santos", "joaosantos", "novaSenha", "joaosantos@example.com", 35, "admin");
 
 		when(usuarioRepository.findById(1)).thenReturn(Optional.of(existingUsuario));
 		when(usuarioRepository.save(any(Usuario.class))).thenAnswer(invocation -> invocation.getArgument(0));

@@ -37,7 +37,6 @@ public class Usuario {
     // NOVO CAMPO:
     @Column(name = "role")
     private String role;
-    // Pode ser "ADMIN" ou "USER" (por ex.)
 
     // getters e setters
     public String getRole() {

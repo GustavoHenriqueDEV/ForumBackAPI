@@ -2,6 +2,7 @@ package com.Crudexample.crud.controller;
 
 import com.Crudexample.crud.model.Usuario;
 import com.Crudexample.crud.repository.UsuarioRepository;
+import com.Crudexample.crud.service.JwtService;
 import com.Crudexample.crud.service.UsuarioService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,9 @@ public class Usuariocontroller {
     private final UsuarioService usuarioService;
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private JwtService jwtService;
 
     @GetMapping
     public ResponseEntity<List<Usuario>> getAllUsuarios() {
@@ -73,10 +77,18 @@ public class Usuariocontroller {
     public ResponseEntity<?> login(@RequestBody Usuario usuario) {
         Usuario user = usuarioService.login(usuario.getLogin(), usuario.getSenha());
         if (user != null) {
-            // Retorna o ID e o nome do usuário
+            String token = jwtService.generateToken(
+                    (long) user.getIdusuario(),
+                    user.getNome(),
+                    user.getRole() // <-- passe a role também
+            );
+
             Map<String, Object> response = new HashMap<>();
             response.put("idusuario", user.getIdusuario());
             response.put("nome", user.getNome());
+            response.put("role", user.getRole()); // Se quiser retornar
+            response.put("token", token);
+
             return ResponseEntity.ok(response);
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciais inválidas");

@@ -59,6 +59,9 @@ public class UsuarioService {
 
     // Registrar um novo usuário
     public Usuario register(Usuario usuario) {
+        if (usuario.getRole() == null) {
+            usuario.setRole("USER");
+        }
         return usuarioRepository.save(usuario);
     }
 }

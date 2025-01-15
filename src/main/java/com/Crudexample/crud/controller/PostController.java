@@ -13,6 +13,7 @@ import com.Crudexample.crud.service.RespostaComentarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -115,6 +116,14 @@ public class PostController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deletePost(@PathVariable Long id) {
+        // se chegou aqui, é ADMIN
+        postRepository.deleteById(Math.toIntExact(id));
+        return ResponseEntity.ok("Deletado com sucesso");
+    }
+
 
     @GetMapping("/{postId}")
     public ResponseEntity<Optional<Post>> getPostById(@PathVariable Long postId) {
