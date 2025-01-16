@@ -1,5 +1,6 @@
 package com.Crudexample.crud.controller;
 
+import com.Crudexample.crud.model.Post;
 import com.Crudexample.crud.model.Usuario;
 import com.Crudexample.crud.repository.UsuarioRepository;
 import com.Crudexample.crud.service.JwtService;
@@ -104,5 +105,34 @@ public class Usuariocontroller {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
+    @GetMapping("/{id}/posts")
+    public ResponseEntity<?> getPostsFromUser(@PathVariable Long id) {
+        try {
+            List<Post> posts = usuarioService.getAllPostsFromUser(id);
+            return ResponseEntity.ok(posts);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro interno: " + e.getMessage());
+        }
+    }
+    @PutMapping("/{id}/profile")
+    public ResponseEntity<?> updateUserProfile(
+            @PathVariable Long id,
+            @RequestBody Map<String, String> body
+    ) {
+        try {
+            String novoNome = body.get("nome");
+            String novaSenha = body.get("senha");
+            Usuario usuarioAtualizado = usuarioService.updateUserProfile((long) Math.toIntExact(id), novoNome, novaSenha);
+            return ResponseEntity.ok("Usuário atualizado: " + usuarioAtualizado.toString());
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erro ao atualizar perfil: " + e.getMessage());
+        }
+    }
+
 }
 

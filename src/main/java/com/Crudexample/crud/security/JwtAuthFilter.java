@@ -39,7 +39,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
 
         String token = authorizationHeader.substring(7);
-
         String role;
         String userId;
         try {
@@ -53,14 +52,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                             null,
                             new ArrayList<>()
                     );
-
             SecurityContextHolder.getContext().setAuthentication(authentication);
-
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
-
         filterChain.doFilter(request, response);
         List<GrantedAuthority> authorities = new ArrayList<>();
         if ("ADMIN".equals(role)) {
@@ -68,14 +64,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         } else {
             authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
         }
-
         UsernamePasswordAuthenticationToken authentication =
                 new UsernamePasswordAuthenticationToken(
                         userId,
                         null,
                         authorities
                 );
-
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
     }

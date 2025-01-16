@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -51,6 +52,33 @@ public class PostService {
     public List<Post> findAllPosts() {
         return postRepository.findAll();
     }
+    // NOVO: atualizar um Post existente
+    public Post updatePost(int idpost, Post updatedData) {
+        // Busca o post existente
+        Post existingPost = postRepository.findById(idpost)
+                .orElseThrow(() -> new RuntimeException("Post com o ID " + idpost + " não foi encontrado."));
 
+        // Atualiza somente campos que vierem no JSON
+        if (updatedData.getTitulo() != null && !updatedData.getTitulo().isEmpty()) {
+            existingPost.setTitulo(updatedData.getTitulo());
+        }
+        if (updatedData.getConteudo() != null && !updatedData.getConteudo().isEmpty()) {
+            existingPost.setConteudo(updatedData.getConteudo());
+        }
+        if (updatedData.getTipo() != null && !updatedData.getTipo().isEmpty()) {
+            existingPost.setTipo(updatedData.getTipo());
+        }
+        // Se for permitir trocar imagem também, faça checagens
+        if (updatedData.getImagem() != null) {
+            byte[] imagemBytes = updatedData.getImagem();
+            existingPost.setImagem(imagemBytes);
+            String imagemBase64 = Base64.getEncoder().encodeToString(imagemBytes);
+            existingPost.setImagembase64(imagemBase64);
+        }
+        // se quiser alterar likes manualmente, etc.
+
+        // Salva e retorna
+        return postRepository.save(existingPost);
+    }
 
 }

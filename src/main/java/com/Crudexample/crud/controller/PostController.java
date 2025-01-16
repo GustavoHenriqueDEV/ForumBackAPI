@@ -134,4 +134,19 @@ public class PostController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updatePost(
+            @PathVariable("id") int idPost,
+            @RequestBody Post updatedData
+    ) {
+        try {
+            Post postAtualizado = postService.updatePost(idPost, updatedData);
+            return ResponseEntity.ok(postAtualizado);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erro ao atualizar o Post: " + e.getMessage());
+        }
+    }
 }

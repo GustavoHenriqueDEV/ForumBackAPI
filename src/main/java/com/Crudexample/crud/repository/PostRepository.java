@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface PostRepository extends JpaRepository<Post, Integer> {
 
@@ -17,5 +19,8 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
 
     @Query("SELECT p.likes FROM Post p WHERE p.id = :id")
     Integer findLikesById(Long id);
+
+    List<Post> findByUsuarioIdusuario(Long idusuario);
+
 
 }
