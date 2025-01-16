@@ -1,6 +1,9 @@
 package com.Crudexample.crud.model;
 
 import jakarta.persistence.*;
+
+import java.util.List;
+
 @Entity
 @Table(name = "comentario")
 public class Comentario {
@@ -13,6 +16,10 @@ public class Comentario {
     @ManyToOne
     @JoinColumn(name = "idpost", referencedColumnName = "idpost", nullable = false)
     private Post post;
+
+    @OneToMany(mappedBy = "comentario", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<RespostaComentario> respostas;
+
 
     @ManyToOne
     @JoinColumn(name = "idusuario", referencedColumnName = "idusuario", nullable = false)

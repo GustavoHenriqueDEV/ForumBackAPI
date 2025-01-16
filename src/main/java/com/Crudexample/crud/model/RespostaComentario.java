@@ -16,6 +16,7 @@ public class RespostaComentario {
         this.usuario = usuario;
         this.conteudo = conteudo;
     }
+
     @ManyToOne
     @JoinColumn(name = "idcomentario", referencedColumnName = "idcomentario", nullable = false)
     private Comentario comentario;

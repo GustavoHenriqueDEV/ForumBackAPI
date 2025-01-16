@@ -65,7 +65,6 @@ public class PostController {
                 post.setImagembase64(imagemBase64);
             }
             Post createdPost = postService.createPost(post);
-
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body("Post criado com sucesso: " + createdPost.toString());
         } catch (ResponseStatusException e) {
@@ -75,7 +74,6 @@ public class PostController {
                     .body("Erro ao criar o post: " + e.getMessage());
         }
     }
-
     @PostMapping("/{postId}/likes")
     public ResponseEntity<?> darLike(@PathVariable("postId") Long postId, @RequestParam Long idusuario) {
         try {
@@ -90,7 +88,6 @@ public class PostController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao adicionar/remover like: " + e.getMessage());
         }
     }
-
     @PostMapping("/{id}/comentarios")
     public ResponseEntity<String> adicionarComentario(@PathVariable Long id, @RequestBody Comentario comentario) {
         try {
@@ -123,8 +120,6 @@ public class PostController {
         postRepository.deleteById(Math.toIntExact(id));
         return ResponseEntity.ok("Deletado com sucesso");
     }
-
-
     @GetMapping("/{postId}")
     public ResponseEntity<Optional<Post>> getPostById(@PathVariable Long postId) {
         try {

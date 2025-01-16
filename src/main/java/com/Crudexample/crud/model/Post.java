@@ -23,6 +23,9 @@ public class Post {
         this.dataCriacao = dataCriacao;
     }
 
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Comentario> comentarios;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idpost")
@@ -75,8 +78,6 @@ public class Post {
         this.dataCriacao = dataCriacao;
     }
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Comentario> comentarios = new ArrayList<>();
 
     public Long getIdpost() {
         return idpost;

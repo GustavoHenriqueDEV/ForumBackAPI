@@ -28,7 +28,7 @@ public class Usuariocontroller {
 
     @GetMapping
     public ResponseEntity<List<Usuario>> getAllUsuarios() {
-        List<Usuario> usuarios = usuarioService.findAll(); // Método no service para listar todos os usuários
+        List<Usuario> usuarios = usuarioService.findAll();
         return ResponseEntity.ok(usuarios);
     }
 
